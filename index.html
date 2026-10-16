@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Cambio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="contenedor">
+        <h1>Simulador de Cambio</h1>
+        <p>Calculá cuánto recibís al cambiar tu dinero.</p>
+
+        <form id="formulario">
+            <label for="monto">Monto en pesos argentinos (ARS):</label>
+            <input
+                type="number"
+                id="monto"
+                min="1"
+                step="0.01"
+                placeholder="Ingresá el monto"
+                required
+            >
+
+            <label for="moneda">Moneda que querés comprar:</label>
+            <select id="moneda">
+                <option value="USD">Dólar estadounidense (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+                <option value="BRL">Real brasileño (BRL)</option>
+            </select>
+
+            <button type="submit">Calcular cambio</button>
+        </form>
+
+        <div id="resultado" aria-live="polite">
+            El resultado aparecerá aquí.
+        </div>
+    </main>
+    <script src="main.js"></script>
+</body>
+</html>
