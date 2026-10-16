@@ -1,68 +1,117 @@
+
 const cotizaciones = {
     USD: 1500,
     EUR: 1750,
     BRL: 280
 };
 
-const formulario = document.getElementById("formulario");
-const campoMonto = document.getElementById("monto");
-const campoMoneda = document.getElementById("moneda");
-const resultado = document.getElementById("resultado");
-
 let cantidadOperaciones = 0;
 
-formulario.addEventListener("submit", function (evento) {
-    evento.preventDefault();
-
-    let monto = Number(campoMonto.value);
-    let moneda = campoMoneda.value;
-
-    // Validamos el monto ingresado.
-    if (monto <= 0 || !Number.isFinite(monto)) {
-        alert("Por favor, ingresá un monto mayor que cero.");
-        resultado.textContent = "El monto ingresado no es válido.";
-    } else if (cotizaciones[moneda] === undefined) {
-        alert("La moneda seleccionada no está disponible.");
-    } else {
-        const cotizacion = cotizaciones[moneda];
-        const dineroRecibido = monto / cotizacion;
-
-        cantidadOperaciones++;
-
-        resultado.textContent =
-            `Con $${monto.toLocaleString("es-AR")} ARS recibís ` +
-            `${dineroRecibido.toFixed(2)} ${moneda}. ` +
-            `Cotización: $${cotizacion} ARS por unidad.`;
-
-        console.log("Operación número:", cantidadOperaciones);
-        console.log("Monto ingresado:", monto);
-        console.log("Moneda seleccionada:", moneda);
-        console.log("Dinero recibido:", dineroRecibido.toFixed(2));
-
-        alert("¡Cambio calculado!");
-    }
-});
-
-// Bucle para permitir realizar varias operaciones.
-let continuar = true;
-
-while (continuar) {
-    const respuesta = prompt(
-        "Simulador de cambio Jorge Estrada: ¿querés conocer las monedas disponibles? " +
-        "Escribí SI o NO."
-    );
-
-    if (respuesta === null || respuesta.trim().toUpperCase() === "NO") {
-        continuar = false;
-    } else if (respuesta.trim().toUpperCase() === "SI") {
-        alert(
-            "Monedas disponibles:\n" +
-            "USD: $1500 ARS\n" +
-            "EUR: $1750 ARS\n" +
-            "BRL: $280 ARS"
-        );
-        continuar = false;
-    } else {
-        alert("Respuesta no válida. Escribí SI o NO.");
-    }
+// calcular el cambio y devolver el resultado
+function calcularCambio(monto, cotizacion) {
+    return monto / cotizacion;
 }
+
+// funcion flecha para obtener la cotizacion
+const obtenerCotizacion = (moneda) => cotizaciones[moneda];
+
+//mostrar el resultado por consola y alert
+function mostrarResultado(monto, moneda, cotizacion, dineroRecibido) {
+    console.log("----- Resultado del cambio -----");
+    console.log("Monto ingresado:", monto, "ARS");
+    console.log("Moneda seleccionada:", moneda);
+    console.log("Cotizacion:", cotizacion, "ARS por unidad");
+    console.log("Dinero recibido:", dineroRecibido.toFixed(2), moneda);
+
+    alert(
+        `Con $${monto.toLocaleString("es-AR")} ARS recibis ` +
+        `${dineroRecibido.toFixed(2)} ${moneda}.\n` +
+        `Cotizacion: $${cotizacion} ARS por unidad.`
+    );
+}
+
+//validar los datos ingresados
+function validarDatos(monto, moneda) {
+    if (!Number.isFinite(monto) || monto <= 0) {
+        alert("El monto debe ser mayor que cero.");
+        console.log("Error: monto invalido.");
+        return false;
+    }
+
+    if (obtenerCotizacion(moneda) === undefined) {
+        alert("La moneda seleccionada no esta disponible.");
+        console.log("Error: moneda no disponible.");
+        return false;
+    }
+
+    return true;
+}
+
+//funcion principal 
+function iniciarSimulador() {
+    let continuar = true;
+
+    while (continuar) {
+        const entradaMonto = prompt(
+            "Ingresa el monto en pesos argentinos (ARS):"
+        );
+
+        if (entradaMonto === null) {
+            break;
+        }
+
+        const monto = Number(entradaMonto);
+
+        const monedaIngresada = prompt(
+            "Que moneda queres comprar? Escribi USD, EUR o BRL."
+        );
+
+        if (monedaIngresada === null) {
+            break;
+        }
+
+        const moneda = monedaIngresada.trim().toUpperCase();
+
+        // Validar y procesar los datos
+        if (validarDatos(monto, moneda)) {
+            const cotizacion = obtenerCotizacion(moneda);
+            const dineroRecibido = calcularCambio(monto, cotizacion);
+
+            cantidadOperaciones++;
+
+            mostrarResultado(
+                monto,
+                moneda,
+                cotizacion,
+                dineroRecibido
+            );
+
+            console.log("Numero de operacion:", cantidadOperaciones);
+        }
+
+        const respuesta = prompt(
+            "Queres realizar otra operacion? Escribi SI o NO."
+        );
+
+        if (
+            respuesta === null ||
+            respuesta.trim().toUpperCase() === "NO"
+        ) {
+            continuar = false;
+        } else if (
+            respuesta.trim().toUpperCase() !== "SI"
+        ) {
+            alert("Respuesta no valida. El simulador finalizara.");
+            continuar = false;
+        }
+    }
+
+    console.log("Total de operaciones:", cantidadOperaciones);
+
+    alert(
+        "Simulador finalizado. Operaciones realizadas: " +
+        cantidadOperaciones
+    );
+}
+
+iniciarSimulador();
