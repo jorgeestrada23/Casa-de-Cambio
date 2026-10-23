@@ -11,6 +11,29 @@ const monedasDisponibles = ["USD", "EUR", "BRL", "CLP", "UYU"];
 
 let cantidadOperaciones = 0;
 
+// Lista donde se guardan los objetos Operacion realizados
+const historialOperaciones = [];
+
+// Clase
+class Operacion {
+    constructor(id, monto, moneda, cotizacion, dineroRecibido) {
+        this.id = id;
+        this.monto = monto;
+        this.moneda = moneda;
+        this.cotizacion = cotizacion;
+        this.dineroRecibido = dineroRecibido;
+    }
+
+    // informa el estado de la operacion
+    informar() {
+        return (
+            `Operacion ${this.id}: $${this.monto.toLocaleString("es-AR")} ARS -> ` +
+            `${this.dineroRecibido.toFixed(2)} ${this.moneda} ` +
+            `(cotizacion: $${this.cotizacion} ARS)`
+        );
+    }
+}
+
 function calcularCambio(monto, cotizacion) {
     return monto / cotizacion;
 }
@@ -241,6 +264,23 @@ function administrarMonedas(monedas, tasas) {
     }
 }
 
+// reporte de las operaciones realizadas
+function mostrarHistorial(operaciones) {
+    if (operaciones.length === 0) {
+        return;
+    }
+
+    console.log("----- Historial de operaciones -----");
+    let texto = "Historial de operaciones:\n";
+
+    for (const operacion of operaciones) {
+        console.log(operacion.informar());
+        texto += operacion.informar() + "\n";
+    }
+
+    alert(texto);
+}
+
 //funcion principal 
 function iniciarSimulador() {
     let continuar = true;
@@ -282,6 +322,11 @@ function iniciarSimulador() {
 
             cantidadOperaciones++;
 
+            // Se crea un objeto Operacion y se guarda en el historial
+            historialOperaciones.push(
+                new Operacion(cantidadOperaciones, monto, moneda, cotizacion, dineroRecibido)
+            );
+
             mostrarResultado(
                 monto,
                 moneda,
@@ -308,6 +353,8 @@ function iniciarSimulador() {
             continuar = false;
         }
     }
+
+    mostrarHistorial(historialOperaciones);
 
     console.log("Total de operaciones:", cantidadOperaciones);
 
